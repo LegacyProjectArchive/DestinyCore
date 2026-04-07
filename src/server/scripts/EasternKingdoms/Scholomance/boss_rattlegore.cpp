@@ -437,7 +437,7 @@ public:
 
         void Register()
         {
-            OnEffectAbsorb += AuraEffectAbsorbFn(spell_rattlegore_bone_armor_AuraScript::HandleAbsorb, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB);
+            OnEffectAbsorb += AuraEffectAbsorbFn(spell_rattlegore_bone_armor_AuraScript::HandleAbsorb, EFFECT_0);
         }
     };
 
