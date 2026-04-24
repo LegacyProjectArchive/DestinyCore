@@ -819,7 +819,7 @@ void WorldSession::HandleDiscardedTimeSyncAcks(WorldPackets::Misc::DiscardedTime
     Player* player = GetPlayer();
 
     if (player->m_movementCounter != packet.MaxSequenceIndex)
-        TC_LOG_DEBUG("network", "Received CMSG_DISCARDED_TIME_SYNC_ACKS from player %s, but maxSequenceIndex %u isn't equal real server SequenceIndex %u", player->GetName(), packet.MaxSequenceIndex, player->m_movementCounter);
+        TC_LOG_DEBUG("network", "Received CMSG_DISCARDED_TIME_SYNC_ACKS from player %s, but maxSequenceIndex %u isn't equal real server SequenceIndex %u", player->GetName().c_str(), packet.MaxSequenceIndex, player->m_movementCounter);
 
     player->m_movementCounter = 0;
 }
