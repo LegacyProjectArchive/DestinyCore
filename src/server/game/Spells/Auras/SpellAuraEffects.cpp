@@ -462,8 +462,8 @@ pAuraEffectHandler AuraEffectHandler[TOTAL_AURAS]=
     &AuraEffect::HandleShowConfirmationPrompt,                    //394 SPELL_AURA_SHOW_CONFIRMATION_PROMPT
     &AuraEffect::HandleCreateAreaTrigger,                         //395 SPELL_AURA_AREA_TRIGGER
     &AuraEffect::HandleTriggerSpellOnPowerAmount,                 //396 SPELL_AURA_TRIGGER_SPELL_ON_POWER_AMOUNT
-    &AuraEffect::HandleNULL,                                      //397
-    &AuraEffect::HandleNULL,                                      //398
+    &AuraEffect::HandleBattlegroundFlag,                          //397 SPELL_AURA_BATTLEGROUND_FLAG
+    &AuraEffect::HandleBattlegroundFlag,                          //398 SPELL_AURA_BATTLEGROUND_FLAG_2
     &AuraEffect::HandleNULL,                                      //399
     &AuraEffect::HandleAuraModSkill,                              //400 SPELL_AURA_MOD_SKILL_2
     &AuraEffect::HandleNULL,                                      //401
@@ -5157,6 +5157,26 @@ void AuraEffect::HandleTriggerSpellOnPowerAmount(AuraApplication const* aurApp, 
     if ((GetMiscValueB() == POWER_PROC_UPPER && powerAmount >= GetAmount()) ||
         (GetMiscValueB() == POWER_PROC_LOWER && powerAmount <= GetAmount()))
         target->CastSpell(target, GetSpellEffectInfo()->TriggerSpell, true);
+}
+
+void AuraEffect::HandleBattlegroundFlag(AuraApplication const* aurApp, uint8 mode, bool apply) const
+{
+    if (!(mode & AURA_EFFECT_HANDLE_REAL))
+        return;
+
+    Player* target = aurApp->GetTarget()->ToPlayer();
+
+    // When removing flag aura, handle flag drop
+    if (!apply && target)
+    {
+        if (target->InBattleground())
+        {
+            if (Battleground* bg = target->GetBattleground())
+                bg->EventPlayerDroppedFlag(target);
+        }
+        else
+            sOutdoorPvPMgr->HandleDropFlag(target, GetSpellInfo()->Id);
+    }
 }
 
 void AuraEffect::HandleAuraOpenStable(AuraApplication const* aurApp, uint8 mode, bool apply) const
